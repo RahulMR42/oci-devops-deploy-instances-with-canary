@@ -1,0 +1,1 @@
+# oci-devops-deploy-instances-with-blue-green-model
