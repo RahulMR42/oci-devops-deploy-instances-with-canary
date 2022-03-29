@@ -412,11 +412,12 @@ app_version=2.0.0
 
 - Push back to the respective code repo ,followed by a manual run of `Build pipeline` and wait for the completion of build and deployment pipeline (with an approval phase as well ).
 
-- If you wish to validate the service before going to production (Thats the best practice for production deployment ,you can add a test load-balancer to fetch the intermittent version release.)
+- If you wish to validate the service before going to production (Thats the best practice for production deployment ,you can add a test load-balancer to fetch the intermittent version release.).For a demo you may validate by launching the instance's public IP via the browser.
+
 
 - Refresh the browser with load-balancer IP and validate the changes .
 
-- You may encounter issue if the sudo or policies are not set correct ,so please re validate the polices and dynamic groups as per the documents accordingly.
+- You may encounter issues mostly  if the ,oci compute agent , sudo or policies are not set correct ,so please re validate the polices and dynamic groups as per the documents accordingly.
 
 Read more 
 ----
