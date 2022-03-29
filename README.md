@@ -421,6 +421,8 @@ app_version=2.0.0
 
 - You may encounter issues mostly  if the ,oci compute agent , sudo or policies are not set correct ,so please re validate the polices and dynamic groups as per the documents accordingly.
 
+- You may also encounter  `502 bad gatewy` during a traffic shift ,as this a demo we are not really persisting the state or maintaining any graceful switch over , these momentarily  errors are normal.
+
 Read more 
 ----
 

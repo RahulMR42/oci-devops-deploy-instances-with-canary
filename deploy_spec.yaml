@@ -1,6 +1,5 @@
 version: 1.0
 component: deployment
-runAs: root
 env:
   variables:
     version: ${appVersion}
@@ -19,7 +18,6 @@ steps:
        sudo systemctl enable httpd
        sudo firewall-cmd --permanent --zone=public --add-service=http
        sudo firewall-cmd --reload
-    runAs: root
     timeoutInSeconds: 600
 
   - stepType: Command
@@ -33,5 +31,4 @@ steps:
       sudo truncate -s 0 /var/www/html/index.html
       sudo chmod 766 /var/www/html/index.html
       echo "<body><b>With Love from OCI Devops(Version:${APP_VERSION}) ,Served via environment:<font color=$bg_color>$bg_color</font></body>" > /var/www/html/index.html
-    runAs: root
     timeoutInSeconds: 600
