@@ -419,13 +419,39 @@ app_version=2.0.0
 
 - Refresh the browser with load-balancer IP and validate the changes .
 
+![](images/oci-lb-view-2.png)
+
+- You validate  the environment switch as accordingly.
+
 - You may encounter issues mostly  if the ,oci compute agent , sudo or policies are not set correct ,so please re validate the polices and dynamic groups as per the documents accordingly.
 
 - You may also encounter  `502 bad gatewy` during a traffic shift ,as this a demo we are not really persisting the state or maintaining any graceful switch over , these momentarily  errors are normal.
 
+- To do a role back , use the `Revert traffic shift` option via the last stage.
+
+![](images/oci-deploy-revert.png)
+
+- Validate the current deployment values.
+
+![](images/oci-deploy-revert-1.png)
+
+- Also validate the new deployment (rollback version) values.
+
+![](images/oci-deploy-revert-2.png)
+
+- You can click `Reverse Traffic Shift` button to lauch the rollback.
+
+![](images/oci-deploy-revert-3.png)
+
+- Wait for the completion and validate the result via load-balancer IP address over a browser.
+
+![](images/oci-deploy-revert-4.png)
+
+![](images/oci-deploy-revert-5.png)
+
+
 Read more 
 ----
-
 
 - OCI Devops - https://docs.oracle.com/en-us/iaas/Content/devops/using/home.htm.
 - OCI Reference architectures  -  https://docs.oracle.com/solutions/
