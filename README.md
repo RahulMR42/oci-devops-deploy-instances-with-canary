@@ -1,6 +1,6 @@
 NOT READY !!
 
-Sample illustration of OCI Devops deployment pipeline with *BLUE-GREEN* deployment strategies using Instance group
+Sample illustration of OCI Devops deployment pipeline with *Canary* deployment strategies using Instance group
 
 ------------
 
@@ -10,8 +10,8 @@ Objective
 
 - Create OCI Devops build pipeline.
 - Build a sample  application.
-- Push the artifact to OCI Container and OCI Artifact repo.
-- Use OCI Deployment pipeline with BLUE/GREEN Deployment strategies.
+- Push the artifact to OCI Artifact repo.
+- Use OCI Deployment pipeline with CANARY Deployment strategies.
 - Validate deployment and manual role back.
 
 
@@ -31,7 +31,7 @@ Procedure
 
 - Create devops artifacts. - https://docs.oracle.com/en-us/iaas/Content/devops/using/artifacts.htm 
 
-- Select the types as `Instance group deployment configuration`.
+- Select the type as `Instance group deployment configuration`.
 
 ![](images/devops-artifact-1.png)
 
@@ -67,7 +67,7 @@ If you are using a code repo other than `OCI code repo` ,ensure to set an extern
 ![](images/oci-manage-build-2.png)
 
 
-- Add an `Deliver artifact` stage to the build pipeline.
+- Add an `Deliver artifacts` stage to the build pipeline.
 
 ![](images/oci-build-upload-artifact-1.png)
 
@@ -94,12 +94,14 @@ outputArtifacts:
 
 - Follow the document and create instances and necessary policies - https://docs.oracle.com/en-us/iaas/Content/Compute/Tasks/launchinginstance.htm 
 
+- We will be creating `2` production instances and `1` canary instance.
+
 - Use `Create instances`
 
 ![](images/oci-compute-create-1.png)
 
 
-- Use the first instance name as `blue-webserver` use default placements.
+- Use the first instance name as `production-vm` use default placements.
 
 
 ![](images/oci-compute-create-2.png)
@@ -122,15 +124,15 @@ outputArtifacts:
 
 - Use the `advanced` > `Oracle Cloud Agent` option and ensure that `Compute Instance Run Command` is enabled .
 
-![](images/oci-compute-create-5.png)
+![](images/oci-compute-create-5-1.png)
 
 - In the same page under `Management` add an Inline cloud-init script and a  `free-form tag` as below 
 
 ```
-environment blue
+environment production 
 ```
 
-- Cloud init script is as below ,
+- Add  Cloud init script is as below too ,
 
 ```
 #cloud-config
@@ -140,19 +142,21 @@ users:
     sudo: ALL=(ALL) NOPASSWD:ALL
 ```
 
-![](images/oci-cloud-init-blue.png)
+![](images/oci-cloud-init-prd.png)
+
+- Proceed the same step with a different instance name as `production-vm-1` as our second production host.
 
 
-- Use `Create instances` and create a new instances.
+- Once done Use `Create instances` again and create a new instance for `canary`.
 
 ![](images/oci-compute-create-1.png)
 
 
-- Use the first instance name as `green-webserver` use default placements.
+- Use the  instance name as `canary-vm-1` and use default placements.
 
 - Use Oralce Linux 8 as image and use the default shape.
 
-![](images/oci-instance-green-1.png)
+![](images/oci-instance-canary-1.png)
 
 
 - Use a `virtual cloud network` and a public network ,Or you create one for demo using `Create new options`.
@@ -166,12 +170,12 @@ users:
 
 - Use the `advanced` > `Oracle Cloud Agent` option and ensure that `Compute Instance Run Command` is enabled .
 
-![](images/oci-compute-create-5.png)
+![](images/oci-compute-create-5-1.png)
 
 - In the same page under `Management` add an Inline cloud-init script and a  `free-form tag` as below 
 
 ```
-environment green
+environment canary
 ```
 
 - Cloud init script is as below ,
@@ -185,59 +189,59 @@ users:
 ```
 
 
-![](images/oci-cloud-init-green.png)
+![](images/oci-cloud-init-canary.png)
 
 
 - Create two new devops environment as type `Instance Group`.- https://docs.oracle.com/en-us/iaas/Content/devops/using/create_instancegroup_environment.htm 
 
-![](images/oci-devops-env-blue-1.png)
+![](images/oci-devops-env-1.png)
 
-- Create an environment for `Blue` environment.
+- Create an environment for `Production` environment.
 
-![](images/oci-devops-env-blue-2.png)
+![](images/oci-devops-env-2.png)
 
 - Go to `next` tab and use `Query` option.
 
-![](images/oci-devops-env-blue-3.png)
+![](images/oci-devops-env-3-1.png)
 
 - Click on `Edit query`
 
-![](images/oci-devops-env-blue-4.png)
+![](images/oci-devops-env-3.png)
 
 - Use the query as below .
 
 ```
-freeformTags.key = 'environment' && freeformTags.value = 'blue'
+freeformTags.key = 'environment' && freeformTags.value = 'production'
 ```
 
-- Once it list the server `blue-webserver` click on `Add instance query`
+- Once it list all the  `production servers` click on `Add instance query`
 
-![](images/oci-devops-env-blue-5.png)
+![](images/oci-devops-env-4.png)
 
 - Click `Create environment` and save the config.
 
 
-- Create an environment for `green` environment.
+- Create an environment for `canary` environment.
 
-![](images/oci-devops-env-green-1.png)
+![](images/oci-devops-env-5.png)
 
 - Go to `next` tab and use `Query` option.
 
-![](images/oci-devops-env-blue-3.png)
+![](images/oci-devops-env-6.png)
 
 - Click on `Edit query`
 
-![](images/oci-devops-env-blue-4.png)
+![](images/oci-devops-env-3.png)
 
 - Use the query as below .
 
 ```
-freeformTags.key = 'environment' && freeformTags.value = 'green'
+freeformTags.key = 'environment' && freeformTags.value = 'canary'
 ```
 
 - Once it list the server `green-webserver` click on `Add instance query`
 
-![](images/oci-devops-env-green-2.png)
+![](images/oci-devops-env-7.png)
 
 - Click `Create environment` and save the config.
 
@@ -261,11 +265,11 @@ freeformTags.key = 'environment' && freeformTags.value = 'green'
 
 ![](images/oci-lb-5.png)
 
-- Select the server created .
+- Select all the servers created .
 
 ![](images/oci-lb-6.png)
 
-- As this a test ,select the Health checl policy as `http` and port as `80` and go next.
+- As this a test ,select the Health check policy as `http` and port as `80` and go next.
 
 
 ![](images/oci-lb-7.png)
@@ -284,7 +288,7 @@ freeformTags.key = 'environment' && freeformTags.value = 'green'
 ![](images/oci-lb-10.png)
 
 - We need to create an ingress rule to allow our application traffic .
-- Do so ,use OCI `Virtual cloud networks(VCN)` service > Click on the VCN used.
+- Do so ,use OCI `Virtual cloud networks(VCN)` service > Click on the VCN considered.
 
 ![](images/oci-vcn-1.png)
 
@@ -292,7 +296,7 @@ freeformTags.key = 'environment' && freeformTags.value = 'green'
 
 ![](images/oci-vcn-2.png)
 
-- Select the security list - use the Default one .Click on `Add ingress Rules`
+- Select the security list - Click  the Default one .Click on `Add ingress Rules`
 
 ![](images/oci-vcn-3.png)
 
@@ -309,60 +313,67 @@ freeformTags.key = 'environment' && freeformTags.value = 'green'
 
 ![](images/oci-devops-deployment.png)
 
-- Add a stage as `Blue/Green Strategy`.
+- Add a stage as `Canary Strategy`.
 
-![](images/oci-deploy-stage-bg-1.png)
+![](images/oci-deploy-1.png)
 
 - Select the `Deployment type` as `Instance Group` and select the `environment` created.
 
-- Associate the the `instance environments` created.
+- Associate the the `Canary environment` with the canary devops environment created.
 
-![](images/oci-deploy-stage-bg-2.png)
+![](images/oci-deploy-2.png)
 
 
 - Select the `Instance group deployment configuration` using `Add Artifact` option .
 
-![](images/oci-deploy-stage-bg-3.png)
+![](images/oci-deploy-3.png)
 
-![](images/oci-deploy-stage-bg-4.png)
+![](images/oci-deploy-4.png)
 
 - Select the `Load balancer` created earlier from the list.
 
-
-![](images/oci-deploy-stage-bg-5.png)
+![](images/oci-deploy-5.png)
 
 - Select the `Listener`
 
-![](images/oci-deploy-stage-bg-6.png)
+![](images/oci-deploy-6.png)
 
 - Use 80 as `Backend port`.
 
-![](images/oci-deploy-stage-bg-7.png)
+![](images/oci-deploy-7.png)
 
-- Update instance rollout policy by percentage and keep the value as  `100` and Click `Next`.
+- USe `Instance rollour by percentage` and value as 50 (half of instances) and the `Delay between batches(seconds)` as 5 and click on `Next`.
 
-![](images/oci-deploy-stage-bg-8.png)
-
-
-- As its a demo keep the `Validation controls` as `None`or you may connect with a function to validate the deployment.
-
-![](images/oci-deploy-bg-validation.png)
+![](images/oci-deploy-8.png)
 
 
-- Enable the `Approval controls` and add `1` as the number of approvers.
+- As its a demo keep the `Validation controls` as `None`or you may connect with a function to validate the deployment got to `Next`.
 
-![](images/oci-deploy-approval.png)
+![](images/oci-deploy-9.png)
+
+- Set the % of traffic to be shifted to canary (a value between 0 to 25).For this demo let us keep 25 % and click on `Next`.
+
+![](images/oci-deploy-10.png)
+
+- Enable the `Approval controls` and add `1` as the number of approvers and click `Next`.
+
+![](images/oci-deploy-11.png)
+
+- For `Production canary` stage ,associate it with the production environment and provide `50` as rollout percentage and a `Delay` of 5 seconds .
+
+![](images/oci-deploy-12.png)
+
 
 - Click add to add the stages.
 
-![](images/oci-deploy-all-stages.png)
+![](images/oci-deploy-13.png)
 
 
  - Switch back to `Build pipeline` and add a `Trigger Deployment` stage.Select the deployment pipeline and associate.Ensure to `check` the Send build pipelines Parameters option.
 
 ![](images/oci-build-trigger-deploy.png)
 
-![](images/oci-build-trigger-deploy-1.png) 
+![](images/oci-build-trigger-deploy-1.png)
 
 - The build pipeline should be as below .
 
