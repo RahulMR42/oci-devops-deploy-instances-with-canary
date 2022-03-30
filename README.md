@@ -390,78 +390,65 @@ freeformTags.key = 'environment' && freeformTags.value = 'canary'
 
 - Switch to the `deployment pipeline` and click on the `Deployments` and deployment which is in `progress`.
 
-![](images/oci-deploy-bg-1.png)
+![](images/oci-deploy-run-1.png)
 
+- Click on it and view the progress.
+
+![](images/oci-deploy-run-2.png)
 
 - After a while  pipeline will be pending for `Approval` stage.Click on the 3 dots and approve the stage .
 
 ![](images/oci-deploy-approve.png)
 
-- Switch back to `Network>Loadbalancer` and fetch the public IP address .
-
-![](images/oci-lb-ip-address.png)
-
-- Switch back to `Deployment pipeline` and validate the completion of all steps.
+- Wait for all the `Deployment stages` to finish.
 
 ![](images/oci-deploy-allstages.png)
 
+- Launch the application using the public ip address via browser.
 
-- Lauch the application via a browser and validate the deployment.
+![](images/oci-chrome-prod.png)
 
-![](images/oci-lb-view-1.png)
 
-The expected result would be 
+- Now to realize the `Canary effect` ,do a re-run ,do a `manual run` of `Build pipeline`.
+- Wait for all the `Build stages to finish`
+
+![](images/oci-build-stages-all-done.png)
+
+- Follow the `Deployments` progress and wait untill `Traffic Shift to Canary` is finished (just before the approval).
+
+![](images/oci-deploy-stage-partial.png)
+
+- Launch the application using the public ip address via browser. Since the canary % of shift is `25` ,25 % of request now will be served via `Canary` environment.Along the previous output you will additionally see the canary deployed application view as well. (For a demo we are using an icon to differentiate).
+
+![](images/oci-chrome-canary.png)
+
+- Give the `Approval` and finish the deployment .
+
+- You may do a application change via updating the file [app_version.config](app_version.config) to a different value and re - run the `build pipeline` .
 
 ```
-With Love from OCI Devops(Version:<Value>) ,Served via environment:<GREEN or BLUE>
-
+app_version=0.0.1 
 ```
 
-- Let us do a new deployment ,by changing app version in the file [app_version.config.](app_version.config)
+- Since we are not using a test loadbalancer , you may launch the canary vm IP via browser to test the changes during the `Traffic shift to Canary` stage completion and approve further for production deployment and once the end of `Production Canary` stage ,the new version will be available via production loadbalancer.
 
-```
-app_version=2.0.0
-```
+- To do a rollback ,click on the 3 dots of Last stage of `Deployment pipeline` and use `Manual rollback`.
 
-- Push back to the respective code repo ,followed by a manual run of `Build pipeline` and wait for the completion of build and deployment pipeline (with an approval phase as well ).
+![](images/oci-deploy-rollback.png)
 
+- Validate the current deployment values and references.
 
+![](images/oci-deploy-rolleback-1.png)
 
-- If you wish to validate the service before going to production (Thats the best practice for production deployment ,you can add a test load-balancer to fetch the intermittent version release.).For a demo you may validate by launching the instance's public IP via the browser.
+- Select a valid deployment from the list and initiate the rollback.
 
+![](images/oci-deploy-rolleback-2.png)
 
-- Refresh the browser with load-balancer IP and validate the changes .
+- Follow the progress and once done ,validate the application via production loadbalancer.
 
-![](images/oci-lb-view-2.png)
+![](images/oci-deploy-rolleback-3.png)
 
-- You validate  the environment switch as accordingly.
-
-- You may encounter issues mostly  if the ,oci compute agent , sudo or policies are not set correct ,so please re validate the polices and dynamic groups as per the documents accordingly.
-
-- You may also encounter  `502 bad gatewy` during a traffic shift ,as this a demo we are not really persisting the state or maintaining any graceful switch over , these momentarily  errors are normal.
-
-- To do a role back , use the `Revert traffic shift` option via the last stage.
-
-![](images/oci-deploy-revert.png)
-
-- Validate the current deployment values.
-
-![](images/oci-deploy-revert-1.png)
-
-- Also validate the new deployment (rollback version) values.
-
-![](images/oci-deploy-revert-2.png)
-
-- You can click `Reverse Traffic Shift` button to lauch the rollback.
-
-![](images/oci-deploy-revert-3.png)
-
-- Wait for the completion and validate the result via load-balancer IP address over a browser.
-
-![](images/oci-deploy-revert-4.png)
-
-![](images/oci-deploy-revert-5.png)
-
+- You may encounter deployment failure incase the policies ,sudo enablement or compute agent status not running on instances etc ,refer the OCI official documentations given above for such cases . Since this is made for demo we have used limited number of instances and blank sudo previledge ,which is not advised for production usecases.
 
 Read more 
 ----
