@@ -30,5 +30,5 @@ steps:
       fi
       sudo truncate -s 0 /var/www/html/index.html
       sudo chmod 766 /var/www/html/index.html
-      echo "<body><img src=$img_url><b>With Love from OCI Devops(Version:${APP_VERSION})</img>" > /var/www/html/index.html
+      echo "<body><img src=$img_url><b>With Love from OCI Devops(Version:${APP_VERSION})</img> & Served via Host: ${hname}" > /var/www/html/index.html
     timeoutInSeconds: 600
