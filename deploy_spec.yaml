@@ -24,7 +24,7 @@ steps:
     name: Install Apache Web Server
     command: |
       hname=`hostname`
-      img_url=ttps://user-images.githubusercontent.com/23480999/160799862-de04fe4b-c54d-4cf1-9011-9b97f016218d.png
+      img_url=https://user-images.githubusercontent.com/23480999/160799862-de04fe4b-c54d-4cf1-9011-9b97f016218d.png
       if [[ ${hname} == canary* ]]; then
           img_url=https://user-images.githubusercontent.com/23480999/160799587-09f7496b-ea8f-4dc5-afe1-30572af91e17.png
       fi

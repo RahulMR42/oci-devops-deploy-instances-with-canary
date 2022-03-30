@@ -1,3 +1,5 @@
+NOT READY !!
+
 Sample illustration of OCI Devops deployment pipeline with *BLUE-GREEN* deployment strategies using Instance group
 
 ------------
