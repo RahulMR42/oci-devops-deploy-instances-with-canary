@@ -1,5 +1,3 @@
-NOT READY !!
-
 Sample illustration of OCI Devops deployment pipeline with *Canary* deployment strategies using Instance group
 
 ------------
